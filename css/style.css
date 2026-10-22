@@ -1,7 +1,8 @@
 /* ============================================================
    收款码合并工具 — 样式表
-   设计:纸墨基调,支付宝蓝 / 微信绿仅作渠道语义色。
-   无渐变、无重阴影,层级靠字重、留白与发丝线。
+   设计:纸墨基调 + 扫码取景框母题 + 双通道环境光。
+   支付宝蓝 / 微信绿仅作渠道语义色;层级靠字重、留白与发丝线;
+   动效仅一处载入编排 + 响应用户操作的反馈。
    ============================================================ */
 
 /* ============ 设计令牌 ============ */
@@ -39,10 +40,17 @@
   --danger: #c2453d;
   --danger-tint: rgba(194, 69, 61, .08);
 
-  /* 形状 */
-  --radius-card: 14px;
+  /* 质感:环境光、取景框角标、阴影 */
+  --wash-a: rgba(22, 119, 255, .07);
+  --wash-w: rgba(7, 193, 96, .06);
+  --tick-a: rgba(22, 119, 255, .42);
+  --tick-w: rgba(7, 193, 96, .42);
+  --tick-ink: rgba(28, 29, 34, .32);
+  --inset-hi: rgba(255, 255, 255, .65);
+  --radius-card: 16px;
   --radius-control: 10px;
-  --shadow-card: 0 1px 2px rgba(28, 29, 34, .04);
+  --shadow-card: 0 1px 2px rgba(28, 29, 34, .04), 0 10px 28px -14px rgba(28, 29, 34, .10);
+  --shadow-lift: 0 8px 20px -8px rgba(28, 29, 34, .35);
   --shadow-pop: 0 8px 28px rgba(16, 24, 40, .18);
 }
 
@@ -73,7 +81,13 @@
     --danger: #ee7c74;
     --danger-tint: rgba(238, 124, 116, .1);
 
-    --shadow-card: none;
+    --wash-a: rgba(22, 119, 255, .10);
+    --wash-w: rgba(7, 193, 96, .08);
+    --tick-a: rgba(22, 119, 255, .55);
+    --tick-w: rgba(7, 193, 96, .55);
+    --inset-hi: rgba(255, 255, 255, .04);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 32px -16px rgba(0, 0, 0, .5);
+    --shadow-lift: 0 8px 20px -8px rgba(0, 0, 0, .6);
     --shadow-pop: 0 8px 28px rgba(0, 0, 0, .5);
   }
 }
@@ -87,6 +101,18 @@ body {
   line-height: 1.65;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+}
+
+/* 双通道环境光:左蓝右绿在页首汇合,呼应"两码合一" */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(60% 42% at 12% -4%, var(--wash-a), transparent 70%),
+    radial-gradient(60% 42% at 88% -4%, var(--wash-w), transparent 70%);
 }
 
 code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
@@ -123,26 +149,42 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
 }
 
 /* ============ 页首 ============ */
-.hero { text-align: center; padding: 56px 20px 36px; }
-.hero-logo { display: flex; justify-content: center; margin-bottom: 18px; }
-.hero-logo svg { width: 54px; height: 54px; display: block; }
-.hero h1 { font-size: 27px; font-weight: 700; letter-spacing: .01em; line-height: 1.3; }
-.hero .subtitle { color: var(--ink-2); font-size: 14.5px; margin-top: 10px; }
+.hero { text-align: center; padding: 60px 20px 40px; }
+.hero-logo { display: flex; justify-content: center; margin-bottom: 20px; }
+.hero-logo svg { width: 58px; height: 58px; display: block; }
+.hero h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .01em;
+}
+.hero .subtitle { color: var(--ink-2); font-size: 15px; margin-top: 12px; }
 .privacy-note {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 18px;
+  margin-top: 20px;
   font-size: 12.5px;
   color: var(--ink-3);
 }
 .privacy-note svg { flex: none; opacity: .85; }
 
+/* 唯一一处编排动效:logo 两半滑入合并,文字逐行浮起 */
+@keyframes mark-l { from { transform: translateX(-12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes mark-r { from { transform: translateX(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+.hero-logo .half-l { animation: mark-l .55s cubic-bezier(.2, .8, .3, 1) both; }
+.hero-logo .half-r { animation: mark-r .55s cubic-bezier(.2, .8, .3, 1) both; }
+.hero-logo .eyes { animation: rise .45s .22s cubic-bezier(.2, .8, .3, 1) both; }
+.hero h1 { animation: rise .45s .1s cubic-bezier(.2, .8, .3, 1) both; }
+.hero .subtitle { animation: rise .45s .17s cubic-bezier(.2, .8, .3, 1) both; }
+.privacy-note { animation: rise .45s .24s cubic-bezier(.2, .8, .3, 1) both; }
+
 /* ============ 布局 ============ */
 .container {
   max-width: 720px;
   margin: 0 auto;
-  padding: 0 16px 48px;
+  padding: 0 16px 28px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -152,7 +194,7 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   background: var(--surface);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card), inset 0 1px 0 var(--inset-hi);
   padding: 24px;
 }
 
@@ -163,8 +205,9 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   margin-bottom: 18px;
   flex-wrap: wrap;
 }
-.card-head h2 { font-size: 15.5px; font-weight: 600; letter-spacing: .01em; }
+.card-head h2 { font-size: 16px; font-weight: 600; letter-spacing: .01em; }
 
+/* 步骤圆:完成后填色,序列进度一眼可读 */
 .step {
   width: 24px; height: 24px;
   border-radius: 50%;
@@ -176,7 +219,16 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   align-items: center;
   justify-content: center;
   flex: none;
+  transition: background .25s, border-color .25s, color .25s;
 }
+.upload-card.is-done .step,
+.options-card.is-done .step {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+.accent-alipay.is-done .step { background: var(--alipay); border-color: var(--alipay); color: #fff; }
+.accent-wechat.is-done .step { background: var(--wechat); border-color: var(--wechat); color: #fff; }
 
 .badge {
   font-size: 12px;
@@ -197,7 +249,12 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   .upload-grid { grid-template-columns: 1fr; }
 }
 
+/* 取景框母题:扫码器四角括号,拖拽/悬停时点亮 */
+.accent-alipay .dropzone { --tick: var(--tick-a); }
+.accent-wechat .dropzone { --tick: var(--tick-w); }
+
 .dropzone {
+  position: relative;
   border: 1.5px dashed var(--hairline-strong);
   border-radius: var(--radius-control);
   background: var(--surface);
@@ -208,7 +265,27 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   cursor: pointer;
   transition: border-color .15s, background .15s;
 }
+.dropzone::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  pointer-events: none;
+  opacity: .55;
+  transition: opacity .15s;
+  background:
+    linear-gradient(var(--tick), var(--tick)) left top / 14px 2px,
+    linear-gradient(var(--tick), var(--tick)) left top / 2px 14px,
+    linear-gradient(var(--tick), var(--tick)) right top / 14px 2px,
+    linear-gradient(var(--tick), var(--tick)) right top / 2px 14px,
+    linear-gradient(var(--tick), var(--tick)) left bottom / 14px 2px,
+    linear-gradient(var(--tick), var(--tick)) left bottom / 2px 14px,
+    linear-gradient(var(--tick), var(--tick)) right bottom / 14px 2px,
+    linear-gradient(var(--tick), var(--tick)) right bottom / 2px 14px;
+  background-repeat: no-repeat;
+}
 .dropzone:hover { border-color: var(--ink-3); }
+.dropzone:hover::before,
+.dropzone.dragover::before { opacity: 1; }
 .accent-alipay .dropzone.dragover { border-color: var(--alipay); background: var(--alipay-tint); }
 .accent-wechat .dropzone.dragover { border-color: var(--wechat); background: var(--wechat-tint); }
 
@@ -335,7 +412,7 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   font-size: 13px;
   color: var(--ink-2);
   cursor: pointer;
-  transition: border-color .15s, color .15s, background .15s;
+  transition: border-color .15s, color .15s, background .15s, box-shadow .15s;
   user-select: none;
 }
 .pill span:hover { border-color: var(--hairline-strong); color: var(--ink); }
@@ -344,6 +421,7 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   background: var(--surface);
   color: var(--ink);
   font-weight: 600;
+  box-shadow: 0 1px 2px rgba(28, 29, 34, .08);
 }
 .pill input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
 .swatch {
@@ -384,7 +462,7 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: border-color .15s, background .15s, color .15s;
+  transition: border-color .15s, background .15s, color .15s, transform .15s, box-shadow .15s;
 }
 .btn:hover { border-color: var(--ink-3); background: var(--paper); }
 .btn:active { transform: scale(.985); }
@@ -399,7 +477,10 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
 .btn-primary:hover:not(:disabled) {
   background: var(--primary-bg-hover);
   border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
 }
+.btn-primary:active:not(:disabled) { transform: none; box-shadow: none; }
 .btn-primary:disabled {
   opacity: 1;
   background: var(--paper);
@@ -429,10 +510,16 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
 
 .hint { text-align: center; font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
 
-/* ============ 结果区 ============ */
+/* ============ 结果区:双通道微光底 + 打印框 ============ */
 @keyframes result-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
+}
+.result-card {
+  background:
+    radial-gradient(120% 70% at 50% 0%, var(--wash-a), transparent 62%),
+    radial-gradient(120% 70% at 50% 100%, var(--wash-w), transparent 62%),
+    var(--surface);
 }
 .result-card:not([hidden]) { animation: result-in .35s cubic-bezier(.2, .8, .3, 1); }
 
@@ -455,11 +542,30 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   flex-wrap: wrap;
 }
 .result-qr {
+  position: relative;
   background: #fff;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-card);
-  padding: 14px;
+  padding: 16px;
   line-height: 0;
+}
+/* 成品同样套取景框,与上传区母题呼应 */
+.result-qr::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  opacity: .8;
+  background:
+    linear-gradient(var(--tick-ink), var(--tick-ink)) left top / 14px 2px,
+    linear-gradient(var(--tick-ink), var(--tick-ink)) left top / 2px 14px,
+    linear-gradient(var(--tick-ink), var(--tick-ink)) right top / 14px 2px,
+    linear-gradient(var(--tick-ink), var(--tick-ink)) right top / 2px 14px,
+    linear-gradient(var(--tick-ink), var(--tick-ink)) left bottom / 14px 2px,
+    linear-gradient(var(--tick-ink), var(--tick-ink)) left bottom / 2px 14px,
+    linear-gradient(var(--tick-ink), var(--tick-ink)) right bottom / 14px 2px,
+    linear-gradient(var(--tick-ink), var(--tick-ink)) right bottom / 2px 14px;
+  background-repeat: no-repeat;
 }
 .result-qr img { max-width: 264px; width: 100%; height: auto; }
 .result-side {
@@ -488,7 +594,7 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
   justify-content: space-between;
   margin-bottom: 14px;
 }
-.history-head h2 { font-size: 15.5px; font-weight: 600; }
+.history-head h2 { font-size: 16px; font-weight: 600; }
 .empty-tip { font-size: 13px; color: var(--ink-3); line-height: 1.7; }
 
 .history-list { list-style: none; margin-top: 2px; }
@@ -517,6 +623,28 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
 .dot.a { background: var(--alipay); }
 .dot.w { background: var(--wechat); }
 .hist-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ============ 项目链接 ============ */
+.page-foot {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px 36px;
+}
+.page-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: color .15s;
+}
+.page-foot a:hover {
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.page-foot svg { flex: none; opacity: .85; }
 
 /* ============ Toast ============ */
 .toast {
@@ -547,8 +675,8 @@ code { font-family: ui-monospace, "SF Mono", Consolas, monospace; }
 
 /* ============ 小屏微调 ============ */
 @media (max-width: 480px) {
-  .hero { padding: 40px 16px 28px; }
-  .hero h1 { font-size: 24px; }
+  .hero { padding: 44px 16px 30px; }
+  .hero h1 { font-size: 26px; }
   .card { padding: 20px 18px; }
   .result-body { gap: 20px; }
   .result-side { max-width: none; width: 100%; }

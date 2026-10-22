@@ -124,6 +124,8 @@
 
   function setChannel(channel, value) { /* value: {url, dataUrl} | null */
     state[channel] = value;
+    var cardEl = $('card-' + channel);
+    if (cardEl) cardEl.classList.toggle('is-done', !!value); /* 步骤圆填色=该步完成 */
     if (!value) {
       showState(channel, 'empty');
       $('file-' + channel).value = '';
@@ -309,6 +311,8 @@
       warnEl.hidden = warns.length === 0;
       warnEl.textContent = warns.join('');
       $('result-card').hidden = false;
+      var optCard = document.querySelector('.options-card');
+      if (optCard) optCard.classList.add('is-done');
       $('result-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
       state.last = { payUrl: payUrl, dataUrl: dataUrl, name: name };
 

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>收款码合并工具 - 支付宝微信收款码合并成一个二维码,扫码自动跳转付款</title>
+<meta name="description" content="将支付宝收款码和微信收款码在线合并成一张通用收款二维码:顾客用哪个 App 扫,就自动进入哪个付款页。纯浏览器本地处理,收款链接不上传任何服务器,免费免注册,支持美化并下载 PNG 打印。">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121317" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="收款码合并工具">
+<meta property="og:title" content="收款码合并工具 - 支付宝微信收款码合并成一个二维码">
+<meta property="og:description" content="顾客用哪个 App 扫,就自动进入哪个付款页。纯浏览器本地处理,收款链接不上传。">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="收款码合并工具 - 支付宝微信收款码合并成一个二维码">
+<meta name="twitter:description" content="顾客用哪个 App 扫,就自动进入哪个付款页。纯浏览器本地处理,收款链接不上传。">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "收款码合并工具",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "description": "将支付宝收款码和微信收款码合并成一张通用收款二维码,扫码自动识别并跳转对应付款页,纯浏览器本地处理。",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+  "featureList": [
+    "支付宝与微信收款码合并为一个二维码",
+    "扫码自动识别支付宝 / 微信并跳转对应付款页",
+    "纯浏览器本地处理,收款链接不上传",
+    "前景颜色、中心 Logo、底部文字美化",
+    "本地历史记录,可随时重新生成下载"
+  ]
+}
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cpath d='M48 2a46 46 0 0 0 0 92z' fill='%231677ff'/%3E%3Cpath d='M48 2a46 46 0 0 1 0 92z' fill='%2307c160'/%3E%3Crect x='14' y='33' width='30' height='30' rx='8' fill='%23fff'/%3E%3Crect x='52' y='33' width='30' height='30' rx='8' fill='%23fff'/%3E%3Crect x='22' y='41' width='14' height='14' rx='4' fill='%231677ff'/%3E%3Crect x='60' y='41' width='14' height='14' rx='4' fill='%2307c160'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="banner" id="file-banner" hidden>
+  当前通过 <code>file://</code> 直接打开,合并码将无法扫码使用。请通过本地服务器访问(见 README:<code>npx http-server</code>)或部署后使用。
+</div>
+
+<header class="hero">
+  <div class="hero-logo">
+    <svg viewBox="0 0 96 96" width="54" height="54" aria-hidden="true">
+      <path d="M48 2a46 46 0 0 0 0 92z" fill="#1677ff"/>
+      <path d="M48 2a46 46 0 0 1 0 92z" fill="#07c160"/>
+      <rect x="14" y="33" width="30" height="30" rx="8" fill="#fff"/>
+      <rect x="52" y="33" width="30" height="30" rx="8" fill="#fff"/>
+      <rect x="22" y="41" width="14" height="14" rx="4" fill="#1677ff"/>
+      <rect x="60" y="41" width="14" height="14" rx="4" fill="#07c160"/>
+    </svg>
+  </div>
+  <h1>收款码合并工具</h1>
+  <p class="subtitle">上传支付宝 + 微信两张收款码,生成一张通用二维码。<br>顾客用哪个 App 扫,就自动进入哪个付款页。</p>
+  <div class="privacy-note"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>全程仅在本机浏览器处理,收款链接不会上传到任何服务器</div>
+</header>
+
+<main class="container">
+
+  <!-- 步骤 1&2:上传两张收款码 -->
+  <section class="upload-grid">
+
+    <div class="card upload-card accent-alipay" id="card-alipay">
+      <div class="card-head">
+        <span class="step">1</span>
+        <span class="badge badge-alipay">支付宝</span>
+        <h2>上传支付宝收款码</h2>
+      </div>
+      <div class="dropzone" id="drop-alipay">
+        <input type="file" id="file-alipay" accept="image/*" hidden>
+        <div class="dz-empty" id="empty-alipay">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h7"/></svg>
+          <p>点击选择 或 拖拽图片到此处</p>
+          <span>支持 JPG / PNG · 也可在下方直接粘贴链接</span>
+        </div>
+        <div class="dz-loading" id="loading-alipay" hidden>
+          <div class="spinner"></div>
+          <p>正在识别二维码…</p>
+        </div>
+        <div class="dz-done" id="done-alipay" hidden>
+          <img id="preview-alipay" alt="收款码预览">
+          <div class="url-line">
+            <span class="type-badge" id="type-alipay"></span>
+            <code id="url-alipay" title=""></code>
+          </div>
+          <button type="button" class="btn btn-small" id="reset-alipay">重新选择</button>
+        </div>
+      </div>
+      <details class="manual">
+        <summary>识别失败?手动粘贴收款链接</summary>
+        <div class="manual-row">
+          <input type="text" id="manual-alipay" placeholder="https://qr.alipay.com/… 或 alipays://…" spellcheck="false">
+          <button type="button" class="btn btn-small" id="manual-ok-alipay">确定</button>
+        </div>
+      </details>
+    </div>
+
+    <div class="card upload-card accent-wechat" id="card-wechat">
+      <div class="card-head">
+        <span class="step">2</span>
+        <span class="badge badge-wechat">微信</span>
+        <h2>上传微信收款码</h2>
+      </div>
+      <div class="dropzone" id="drop-wechat">
+        <input type="file" id="file-wechat" accept="image/*" hidden>
+        <div class="dz-empty" id="empty-wechat">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h7"/></svg>
+          <p>点击选择 或 拖拽图片到此处</p>
+          <span>支持 JPG / PNG · 也可在下方直接粘贴链接</span>
+        </div>
+        <div class="dz-loading" id="loading-wechat" hidden>
+          <div class="spinner"></div>
+          <p>正在识别二维码…</p>
+        </div>
+        <div class="dz-done" id="done-wechat" hidden>
+          <img id="preview-wechat" alt="收款码预览">
+          <div class="url-line">
+            <span class="type-badge" id="type-wechat"></span>
+            <code id="url-wechat" title=""></code>
+          </div>
+          <button type="button" class="btn btn-small" id="reset-wechat">重新选择</button>
+        </div>
+      </div>
+      <details class="manual">
+        <summary>识别失败?手动粘贴收款链接</summary>
+        <div class="manual-row">
+          <input type="text" id="manual-wechat" placeholder="wxp://f2f… 或 https://wx.tenpay.com/…" spellcheck="false">
+          <button type="button" class="btn btn-small" id="manual-ok-wechat">确定</button>
+        </div>
+      </details>
+    </div>
+
+  </section>
+
+  <!-- 步骤 3:美化 + 生成 -->
+  <section class="card options-card">
+    <div class="card-head">
+      <span class="step">3</span>
+      <h2>美化并生成</h2>
+    </div>
+
+    <div class="opt-grid">
+      <div class="opt-group">
+        <label class="opt-label">前景颜色</label>
+        <div class="radio-pills" id="opt-fg">
+          <label class="pill"><input type="radio" name="fg" value="#000000" checked><span><i class="swatch" style="background:#000000"></i>经典黑</span></label>
+          <label class="pill"><input type="radio" name="fg" value="#1677ff"><span><i class="swatch" style="background:#1677ff"></i>支付宝蓝</span></label>
+          <label class="pill"><input type="radio" name="fg" value="#07c160"><span><i class="swatch" style="background:#07c160"></i>微信绿</span></label>
+        </div>
+      </div>
+
+      <div class="opt-group">
+        <label class="opt-label">中心 Logo</label>
+        <div class="radio-pills" id="opt-logo">
+          <label class="pill"><input type="radio" name="logo" value="combined" checked><span>双拼 Logo</span></label>
+          <label class="pill"><input type="radio" name="logo" value="alipay"><span>支付宝</span></label>
+          <label class="pill"><input type="radio" name="logo" value="wechat"><span>微信</span></label>
+          <label class="pill"><input type="radio" name="logo" value="none"><span>无</span></label>
+        </div>
+      </div>
+
+      <div class="opt-group">
+        <label class="opt-label check-line">
+          <input type="checkbox" id="opt-caption-on" checked> 底部文字
+        </label>
+        <input type="text" id="opt-caption-text" class="text-input" value="扫一扫付款" maxlength="20" placeholder="例如:扫一扫付款">
+      </div>
+
+      <div class="opt-group">
+        <label class="opt-label" for="gen-name">备注名(可选,存入历史记录)</label>
+        <input type="text" id="gen-name" class="text-input" maxlength="30" placeholder="例如:小店收银台">
+      </div>
+    </div>
+
+    <button type="button" id="btn-generate" class="btn btn-primary btn-lg" disabled>生成合并收款码</button>
+    <p class="hint" id="gen-hint">请先完成上方两张收款码的上传/粘贴</p>
+  </section>
+
+  <!-- 生成结果 -->
+  <section class="card result-card" id="result-card" hidden>
+    <h2 class="result-title"><svg class="title-check" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke-width="1.6" opacity=".4"/><path d="M8 12.4l2.7 2.6L16 9.6" stroke-width="2.2"/></svg>生成成功</h2>
+    <div class="result-body">
+      <div class="result-qr">
+        <img id="result-img" alt="合并收款码">
+      </div>
+      <div class="result-side">
+        <p class="result-name" id="result-name"></p>
+        <p class="result-tip">建议用支付宝、微信分别扫码实测一次</p>
+        <button type="button" class="btn btn-primary" id="btn-download">下载 PNG</button>
+        <button type="button" class="btn" id="btn-copy-url">复制扫码链接</button>
+        <p class="warn" id="result-warn" hidden></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 历史记录 -->
+  <section class="card history-card">
+    <div class="history-head">
+      <h2>历史记录</h2>
+      <button type="button" class="btn btn-small btn-danger-ghost" id="btn-clear-history" hidden>清空</button>
+    </div>
+    <p class="empty-tip" id="history-empty">暂无记录。生成的合并码会自动保存在本机浏览器(localStorage),仅自己可见。</p>
+    <ul class="history-list" id="history-list"></ul>
+  </section>
+
+</main>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/vendor/jsQR.js"></script>
+<script src="js/vendor/qrcode.min.js"></script>
+<script src="js/decode.js"></script>
+<script src="js/beautify.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
